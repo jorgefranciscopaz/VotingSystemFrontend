@@ -3,29 +3,40 @@ import { useState } from "react";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [accessKey, setAccessKey] = useState("");
+  const [showAccessKey, setShowAccessKey] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí puedes integrar la lógica real de autenticación
-    if (username && password) {
-      navigate("/home");
+    if (id === "admin" && password === "admin") {
+      setShowAccessKey(true);
+      if (accessKey === "123") {
+        navigate("/admin");
+      } else if (accessKey !== "") {
+        setError("Clave de acceso incorrecta");
+      }
     } else {
-      alert("Por favor ingresa credenciales válidas");
+      if (id && password) {
+        navigate("/home");
+      } else {
+        setError("Por favor complete todos los campos");
+      }
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-80">
-        <h2 className="text-2xl font-bold mb-4 text-center">Iniciar Sesión</h2>
+        <h1 className="text-4xl font-bold mb-6 text-center">RNP</h1>
         <input
           type="text"
-          placeholder="Usuario"
+          placeholder="ID"
           className="w-full mb-4 px-3 py-2 border rounded"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={id}
+          onChange={(e) => setId(e.target.value)}
         />
         <input
           type="password"
@@ -34,8 +45,21 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-          Entrar
+        {showAccessKey && (
+          <input
+            type="password"
+            placeholder="Clave de acceso"
+            className="w-full mb-4 px-3 py-2 border rounded"
+            value={accessKey}
+            onChange={(e) => setAccessKey(e.target.value)}
+          />
+        )}
+        {error && <p className="text-red-500 mb-2 text-sm">{error}</p>}
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
+          Login
         </button>
       </form>
     </div>
