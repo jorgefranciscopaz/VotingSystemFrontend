@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import logo from "../assets/logoRNP.png"; // Asegúrate de que esta ruta apunte a tu imagen
 
 export default function Login() {
   const navigate = useNavigate();
@@ -28,20 +29,23 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-80">
-        <h1 className="text-4xl font-bold mb-6 text-center">RNP</h1>
+    <div className="flex items-center justify-center h-screen splash-animated-bg">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-8 rounded shadow-md w-80 text-center"
+      >
+        <img src={logo}alt="Logo RNP" className="mx-auto mb-6 w-500" />
         <input
           type="text"
           placeholder="ID"
-          className="w-full mb-4 px-3 py-2 border rounded"
+          className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={id}
           onChange={(e) => setId(e.target.value)}
         />
         <input
           type="password"
           placeholder="Contraseña"
-          className="w-full mb-4 px-3 py-2 border rounded"
+          className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -49,7 +53,7 @@ export default function Login() {
           <input
             type="password"
             placeholder="Clave de acceso"
-            className="w-full mb-4 px-3 py-2 border rounded"
+            className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
             value={accessKey}
             onChange={(e) => setAccessKey(e.target.value)}
           />
@@ -57,7 +61,7 @@ export default function Login() {
         {error && <p className="text-red-500 mb-2 text-sm">{error}</p>}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
         >
           Login
         </button>
