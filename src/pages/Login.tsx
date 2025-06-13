@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import logo from "../assets/logoRNP.png"; // Asegúrate de que esta ruta apunte a tu imagen
+import logo from "../assets/logoRNP.png";
+import BubbleBackground from "../components/BubbleBackground"; // Ajusta la ruta si es necesario
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,12 +31,16 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen splash-animated-bg">
+    <div className="relative flex items-center justify-center h-screen bg-white overflow-hidden">
+
+      <BubbleBackground />
+      
+      {/* Formulario */}
       <form
         onSubmit={handleLogin}
-        className="bg-white p-8 rounded shadow-md w-80 text-center"
+        className="z-10 bg-white p-8 rounded shadow-md w-80 text-center relative"
       >
-        <img src={logo}alt="Logo RNP" className="mx-auto mb-6 w-500" />
+        <img src={logo} alt="Logo RNP" className="mx-auto mb-6 w-250" />
         <input
           type="text"
           placeholder="ID"

@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @keyframes bubbleMotion {
   0% {
     transform: translate(0, 0) scale(1);
@@ -19,19 +15,19 @@
 
 @keyframes colorShift {
   0% {
-    background-color: rgba(255, 59, 48, 0.35); /* rojo pastel */
+    background-color: rgba(255, 59, 48, 0.35);
   }
   25% {
-    background-color: rgba(255, 204, 0, 0.35); /* amarillo pastel */
+    background-color: rgba(255, 204, 0, 0.35);
   }
   50% {
-    background-color: rgba(52, 199, 89, 0.35); /* verde pastel */
+    background-color: rgba(52, 199, 89, 0.35);
   }
   75% {
-    background-color: rgba(0, 122, 255, 0.35); /* azul pastel */
+    background-color: rgba(0, 122, 255, 0.35);
   }
   100% {
-    background-color: rgba(255, 59, 48, 0.35); /* rojo pastel */
+    background-color: rgba(255, 59, 48, 0.35);
   }
 }
 
@@ -42,7 +38,7 @@
     bubbleMotion 18s ease-in-out infinite alternate,
     colorShift 10s ease-in-out infinite alternate;
   mix-blend-mode: screen;
-  filter: blur(35px); /* Menos difuminado para que se vean más sólidas */
+  filter: blur(35px);
   pointer-events: none;
   z-index: 0;
 }
