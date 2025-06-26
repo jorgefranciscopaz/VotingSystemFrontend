@@ -1,22 +1,11 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import logo from "../assets/logoRNP.png";
 
 export default function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar para administrador (sin links navegables) */}
-      <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-4">
-          <img src={logo} alt="Logo RNP" className="h-16" />
-          <h1 className="text-xl font-bold text-blue-800">VotingSystem - Admin</h1>
-        </div>
-        <ul className="flex space-x-6 text-gray-400 font-medium">
-          <li className="cursor-not-allowed">Presidente</li>
-          <li className="cursor-not-allowed">Alcalde</li>
-          <li className="cursor-not-allowed">Diputado</li>
-        </ul>
-      </nav>
+      {/* Navbar global */}
+      <Navbar />
 
       {/* Contenedor principal */}
       <main className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
