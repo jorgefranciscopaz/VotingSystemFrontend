@@ -51,9 +51,8 @@ export default function HomePage() {
       <div className="px-6 py-10 max-w-screen-xl mx-auto space-y-10">
         {/* Sección de propaganda */}
         <div className="bg-white shadow-md rounded-lg p-10 text-center">
-          <h2 className="text-3xl font-bold mb-4">Imágenes de Propaganda de los partidos postulados</h2>
           <div className="w-full h-60 bg-gray-300 rounded-md flex items-center justify-center">
-            <p className="text-xl text-gray-700">[Propaganda aquí]</p>
+            <img src="/src/assets/propaganda_imagen.jpg" alt="Propaganda Partido Nacional" className="w-full h-60 object-cover rounded-md" />
           </div>
         </div>
 
