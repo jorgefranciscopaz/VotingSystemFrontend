@@ -20,7 +20,6 @@ export function bankersSingleResourceRunner(input: any) {
           }
           result;
         `;
-        // eslint-disable-next-line no-new-func
         const extracted = Function('"use strict";' + code).call(sandbox);
         if (!extracted) throw new Error("Entrada inválida");
         ({ processes, available, pid, request } = extracted);
