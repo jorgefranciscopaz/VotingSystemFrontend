@@ -44,8 +44,11 @@ export default function AlcaldePage() {
   const navigate = useNavigate();
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
 
+  const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const municipioId = userData.municipio_id;
+ 
   useEffect(() => {
-    fetch("https://votingbackend-fe5a580c2b2c.herokuapp.com/api/candidatos-alcalde")
+    fetch(`https://votingbackend-fe5a580c2b2c.herokuapp.com/api/municipios/${municipioId}/candidatos-alcalde`)
       .then((res) => res.json())
       .then((data) => setCandidatos(data))
       .catch((err) => console.error("Error al cargar candidatos:", err));
@@ -59,7 +62,7 @@ export default function AlcaldePage() {
         Candidatos a Alcalde
       </h2>
 
-      <div className="px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+      <div className="px-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
         {candidatos.map((c) => (
           <CandidatoCard key={c.id_candidato} 
           fotoUrl={c.foto_url} 
@@ -75,7 +78,7 @@ export default function AlcaldePage() {
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50 flex justify-between items-center px-6 py-3">
         <button
           className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/votar/presidente")}
+          onClick={() => navigate("/votar/diputado")}
         >
           ←
         </button>
@@ -84,9 +87,9 @@ export default function AlcaldePage() {
         </span>
         <button
           className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/proceso-votacion")}
         >
-          →
+          ✓
         </button>
       </div>
     </div>

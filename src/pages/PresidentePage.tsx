@@ -69,7 +69,7 @@ export default function PresidentePage() {
       <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg border-t border-gray-200 z-50 flex justify-between items-center px-6 py-3">
         <button
           className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         >
           ←
         </button>
