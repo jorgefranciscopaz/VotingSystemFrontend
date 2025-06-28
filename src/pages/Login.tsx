@@ -2,11 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../assets/logoRNP.png";
 import BubbleBackground from "../components/BubbleBackground"; // Ajusta la ruta si es necesario
-import { parseJwt } from "../utils/parseJWT";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [id, setId] = useState("");
   const [loginValues, setLoginValues] = useState({
     id: "",
     password: "",
@@ -48,7 +46,9 @@ export default function Login() {
           navigate("/home");
         } else {
           //TODO: rellenar los datos restantes de la persona, para despues poder hacer el login solo con id
-          navigate("/fill-info");
+          navigate("/complete-info", {
+            state: { no_identidad: loginValues.id },
+          });
         }
       } catch (error) {
         alert("Error al buscar persona: " + error);
@@ -69,7 +69,6 @@ export default function Login() {
             departamento_id: response.departamento_id,
           })
         );
-        alert(localStorage.getItem("userData"));
         navigate("/home");
       } else {
         alert("Login fallido");

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
+import CompleteInfo from "./pages/CompleteInfo";
 import HomePage from "./pages/HomePage";
 import AdminPage from "./pages/AdminPage"; // nueva línea
 import PresidentePage from "./pages/PresidentePage";
@@ -13,6 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/complete-info" element={<CompleteInfo />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/admin" element={<AdminPage />} /> {/* nueva ruta */}
         <Route path="/votar/presidente" element={<PresidentePage />} />
