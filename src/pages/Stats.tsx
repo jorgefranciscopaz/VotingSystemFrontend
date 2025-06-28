@@ -116,12 +116,25 @@ const Stats = () => {
   // Filtrar alcaldes por municipio
   const dataAlcaldes =
     filtroAlcaldes === "todos"
-      ? statsAlcaldes?.candidatos?.slice(0, 6).map((candidato: any) => ({
-          name: candidato.municipio,
-          votos: candidato.total_votos,
-          partido: candidato.partido,
-          movimiento: candidato.movimiento,
-        })) || []
+      ? statsAlcaldes?.candidatos
+          ?.reduce((acc: any[], candidato: any) => {
+            const existingMunicipio = acc.find(
+              (item: any) => item.name === candidato.municipio
+            );
+            if (existingMunicipio) {
+              existingMunicipio.votos += candidato.total_votos;
+            } else {
+              acc.push({
+                name: candidato.municipio,
+                votos: candidato.total_votos,
+                partido: candidato.partido,
+                movimiento: candidato.movimiento,
+              });
+            }
+            return acc;
+          }, [])
+          .sort((a: any, b: any) => b.votos - a.votos)
+          .slice(0, 15) || []
       : statsAlcaldes?.candidatos
           ?.filter((c: any) => c.municipio === filtroAlcaldes)
           .map((candidato: any) => ({
@@ -129,7 +142,8 @@ const Stats = () => {
             votos: candidato.total_votos,
             partido: candidato.partido,
             movimiento: candidato.movimiento,
-          })) || [];
+          }))
+          .sort((a: any, b: any) => b.votos - a.votos) || [];
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -249,19 +263,19 @@ const Stats = () => {
             <div className="text-sm text-gray-600">Total Votos</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-green-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_presidenciales || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Presidenciales</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-purple-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_diputados || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Diputados</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-orange-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_alcaldes || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Alcaldes</div>
@@ -436,7 +450,7 @@ const Stats = () => {
           )}
           <div className="text-xs text-gray-500 mt-2 text-center">
             {filtroAlcaldes === "todos"
-              ? `Mostrando ${dataAlcaldes.length} de ${municipiosAlcaldes.length} municipios`
+              ? `Mostrando total de votos por municipio (${dataAlcaldes.length} municipios)`
               : `Candidatos en ${filtroAlcaldes}: ${dataAlcaldes.length}`}
           </div>
         </div>
