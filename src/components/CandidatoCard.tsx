@@ -4,6 +4,7 @@ interface CandidatoCardProps {
   fotoUrl: string;
   nombre: string;
   partido: string;
+  movimiento?: string; // Opcional si no se usa
   ubicacion: string;
   rol: string;
 }
@@ -12,6 +13,7 @@ const CandidatoCard: React.FC<CandidatoCardProps> = ({
   fotoUrl,
   nombre,
   partido,
+  movimiento,
   ubicacion,
   rol,
 }) => {
@@ -34,6 +36,7 @@ const CandidatoCard: React.FC<CandidatoCardProps> = ({
       <div className="p-4 flex-1">
         <h2 className="text-lg font-bold text-gray-800 mb-1">{nombre}</h2>
         <p className="text-sm text-gray-600">{partido}</p>
+        <p className="text-sm text-gray-600">{movimiento}</p>
         <p className="text-sm text-gray-600">{ubicacion}</p>
         <p className="text-sm text-gray-600 mb-2">{rol}</p>
       </div>

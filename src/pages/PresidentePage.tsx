@@ -1,9 +1,28 @@
 // PresidentePage.tsx
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import CandidatoCard from "../components/CandidatoCard";
 import Navbar from "../components/Navbar";
 
-const candidatos = Array.from({ length: 12 }, (_, i) => ({
+interface Partido {
+  id_partido: number;
+  nombre: string;
+}
+
+interface Movimiento {
+  id_movimiento: number;
+  nombre: string;
+}
+
+interface Candidato {
+  id_candidato: number;
+  nombre: string;
+  foto_url: string;
+  partido: Partido;
+  movimiento: Movimiento; 
+}
+
+/*const candidatos = Array.from({ length: 12 }, (_, i) => ({
   fotoUrl: "/src/assets/JOH-1.jpg",
   nombre: `Presidente ${i + 1}`,
   partido:
@@ -14,10 +33,18 @@ const candidatos = Array.from({ length: 12 }, (_, i) => ({
       : "Partido Libre",
   ubicacion: "Departamento / Municipio",
   rol: "Presidente",
-}));
+})); */
 
 export default function PresidentePage() {
   const navigate = useNavigate();
+  const [candidatos, setCandidatos] = useState<Candidato[]>([]);
+
+    useEffect(() => {
+    fetch("https://votingbackend-fe5a580c2b2c.herokuapp.com/api/candidatos-presidente")
+      .then((res) => res.json())
+      .then((data) => setCandidatos(data))
+      .catch((err) => console.error("Error al cargar candidatos:", err));
+  }, []);
 
   return (
     <div className="bg-green-100 min-h-screen pb-20">
@@ -26,9 +53,15 @@ export default function PresidentePage() {
         Candidatos a Presidente
       </h2>
 
-      <div className="px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-        {candidatos.map((c, i) => (
-          <CandidatoCard key={i} {...c} />
+      <div className="px-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center ">
+        {candidatos.map((c) => (
+          <CandidatoCard key={c.id_candidato} 
+          fotoUrl={c.foto_url} 
+          nombre = {c.nombre} 
+          partido = {c.partido.nombre} 
+          movimiento={c.movimiento ? c.movimiento.nombre : "Sin Movimiento"}
+          ubicacion=" " 
+          rol="Presidente" />
         ))}
       </div>
 
