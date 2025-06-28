@@ -1,5 +1,3 @@
-// AlcaldePage.tsx
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import CandidatoCard from "../components/CandidatoCard";
 import Navbar from "../components/Navbar";

@@ -23,7 +23,8 @@ const Stats = () => {
   const [filtroAlcaldes, setFiltroAlcaldes] = useState("todos");
   const [loading, setLoading] = useState(true);
 
-  const url = "http://localhost:8000/api";
+  const url = "https://votingbackend-fe5a580c2b2c.herokuapp.com/api";
+  //const url = "http://localhost:8000/api";
 
   const COLORS = [
     "#1976D2", // Nacional (azul fuerte)
@@ -222,7 +223,7 @@ const Stats = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 mt-20">
       <Navbar />
       <div className="container mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">

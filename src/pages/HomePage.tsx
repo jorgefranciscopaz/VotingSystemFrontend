@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Navbar from "../components/Navbar";
@@ -52,12 +51,18 @@ export default function HomePage() {
         {/* Sección de propaganda */}
         <div className="bg-white shadow-md rounded-lg p-10 text-center">
           <div className="w-full h-60 bg-gray-300 rounded-md flex items-center justify-center">
-            <img src="/src/assets/propaganda_imagen.jpg" alt="Propaganda Partido Nacional" className="w-full h-60 object-cover rounded-md" />
+            <img
+              src="/src/assets/propaganda_imagen.jpg"
+              alt="Propaganda Partido Nacional"
+              className="w-full h-60 object-cover rounded-md"
+            />
           </div>
         </div>
 
         {/* Título de partidos */}
-        <h3 className="text-2xl font-semibold text-center">Partidos participantes en estas votaciones</h3>
+        <h3 className="text-2xl font-semibold text-center">
+          Partidos participantes en estas votaciones
+        </h3>
 
         {/* Logos o tarjetas por partido */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
