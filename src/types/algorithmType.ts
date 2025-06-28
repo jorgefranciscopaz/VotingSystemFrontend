@@ -4,7 +4,8 @@ export type AlgorithmType = {
   lastUpdated: string;
   description: string;
   codetype: "JavaScript" | "C++";
-  code: string;
+  code: (input: any) => string;
+  sourceCode: string;
   inputExample: string;
   outputExample: string;
   complexity?: {

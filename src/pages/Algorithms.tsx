@@ -33,7 +33,7 @@ const Algorithms = () => {
   //TODO: Implementar el algoritmo
   const handleRunAlgorithm = () => {
     try {
-      setOutputData("hola");
+      setOutputData(currentAlgorithm.code(inputData));
     } catch (error) {
       setOutputData(`Error: ${error}`);
     }
@@ -42,7 +42,7 @@ const Algorithms = () => {
   // Resaltar sintaxis cuando cambie el algoritmo seleccionado
   useEffect(() => {
     const html = Prism.highlight(
-      currentAlgorithm.code,
+      currentAlgorithm.sourceCode,
       Prism.languages.javascript,
       "javascript"
     );
@@ -106,7 +106,7 @@ const Algorithms = () => {
                   <span>{currentAlgorithm.codetype}</span>
                   <button
                     className="copy-button"
-                    onClick={() => handleCopyCode(currentAlgorithm.code)}
+                    onClick={() => handleCopyCode(currentAlgorithm.sourceCode)}
                   >
                     Copiar
                   </button>

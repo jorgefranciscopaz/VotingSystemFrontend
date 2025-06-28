@@ -8,8 +8,11 @@ export const banqueroVariosData: AlgorithmType = {
   
   `,
   codetype: "C++",
-  code: `
-
+  code: (_input: any) => {
+    return "hola";
+  },
+  sourceCode: `
+  
   `,
   inputExample: ``,
   outputExample: ``,

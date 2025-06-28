@@ -8,8 +8,11 @@ export const barberoData: AlgorithmType = {
   
   `,
   codetype: "JavaScript",
-  code: `
-
+  code: (_input: any) => {
+    return "hola";
+  },
+  sourceCode: `
+  
   `,
   inputExample: ``,
   outputExample: ``,

@@ -8,8 +8,11 @@ export const lectoresEscritoresData: AlgorithmType = {
   
   `,
   codetype: "JavaScript",
-  code: `
-
+  code: (_input: any) => {
+    return "hola";
+  },
+  sourceCode: `
+  
   `,
   inputExample: ``,
   outputExample: ``,
