@@ -103,6 +103,15 @@ const Navbar: React.FC = () => {
             </li>
           )}
 
+          <li>
+            <Link
+              to="/algoritmos"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              Algoritmos
+            </Link>
+          </li>
+
           {localStorage.getItem("userData") && (
             <li
               onClick={handleLogout}
