@@ -42,6 +42,40 @@ const Stats = () => {
     "#B22222", // Libre (rojo oscuro/burdeos)
   ];
 
+  // Función para detectar empates en alcaldes
+  const detectarEmpates = (data: any[]) => {
+    if (data.length < 2) return new Set();
+
+    const empates = new Set<string>();
+
+    // Para cada municipio, verificar si hay empate entre los candidatos
+    const municipiosUnicos = [...new Set(data.map((item) => item.name))];
+
+    municipiosUnicos.forEach((municipio) => {
+      // Obtener todos los candidatos de este municipio
+      const candidatosMunicipio =
+        statsAlcaldes?.candidatos?.filter(
+          (c: any) => c.municipio === municipio
+        ) || [];
+
+      // Ordenar por votos descendente
+      const candidatosOrdenados = candidatosMunicipio.sort(
+        (a: any, b: any) => b.total_votos - a.total_votos
+      );
+
+      // Verificar si los dos primeros tienen la misma cantidad de votos
+      if (
+        candidatosOrdenados.length >= 2 &&
+        candidatosOrdenados[0].total_votos ===
+          candidatosOrdenados[1].total_votos
+      ) {
+        empates.add(municipio);
+      }
+    });
+
+    return empates;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -116,12 +150,25 @@ const Stats = () => {
   // Filtrar alcaldes por municipio
   const dataAlcaldes =
     filtroAlcaldes === "todos"
-      ? statsAlcaldes?.candidatos?.slice(0, 6).map((candidato: any) => ({
-          name: candidato.municipio,
-          votos: candidato.total_votos,
-          partido: candidato.partido,
-          movimiento: candidato.movimiento,
-        })) || []
+      ? statsAlcaldes?.candidatos
+          ?.reduce((acc: any[], candidato: any) => {
+            const existingMunicipio = acc.find(
+              (item: any) => item.name === candidato.municipio
+            );
+            if (existingMunicipio) {
+              existingMunicipio.votos += candidato.total_votos;
+            } else {
+              acc.push({
+                name: candidato.municipio,
+                votos: candidato.total_votos,
+                partido: candidato.partido,
+                movimiento: candidato.movimiento,
+              });
+            }
+            return acc;
+          }, [])
+          .sort((a: any, b: any) => b.votos - a.votos)
+          .slice(0, 15) || []
       : statsAlcaldes?.candidatos
           ?.filter((c: any) => c.municipio === filtroAlcaldes)
           .map((candidato: any) => ({
@@ -129,7 +176,11 @@ const Stats = () => {
             votos: candidato.total_votos,
             partido: candidato.partido,
             movimiento: candidato.movimiento,
-          })) || [];
+          }))
+          .sort((a: any, b: any) => b.votos - a.votos) || [];
+
+  const empatesAlcaldes =
+    filtroAlcaldes === "todos" ? detectarEmpates(dataAlcaldes) : new Set();
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -173,12 +224,16 @@ const Stats = () => {
   const CustomTooltipAlcaldes = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+      const esEmpate =
+        filtroAlcaldes === "todos" && empatesAlcaldes.has(data.name);
+
       return (
         <div className="bg-white p-3 border border-gray-200 rounded shadow text-xs">
           <p className="font-semibold text-gray-800">{data.name}</p>
           <p className="text-gray-600">Partido: {data.partido}</p>
           <p className="text-gray-600">Movimiento: {data.movimiento}</p>
           <p className="text-blue-600 font-medium">Votos: {data.votos}</p>
+          {esEmpate && <p className="text-orange-600 font-medium">⚠️ Empate</p>}
         </div>
       );
     }
@@ -249,19 +304,19 @@ const Stats = () => {
             <div className="text-sm text-gray-600">Total Votos</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-green-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_presidenciales || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Presidenciales</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-purple-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_diputados || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Diputados</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4 text-center">
-            <div className="text-3xl font-bold text-orange-600">
+            <div className="text-3xl font-bold text-blue-600">
               {statsGenerales?.totales?.votos_alcaldes || 0}
             </div>
             <div className="text-sm text-gray-600">Votos Alcaldes</div>
@@ -414,15 +469,26 @@ const Stats = () => {
                   <Bar dataKey="votos">
                     {dataAlcaldes.map((entry: any, index: number) => {
                       let color = "#8884d8";
-                      if (entry.partido === "Partido Nacional")
-                        color = COLORS[0];
-                      if (entry.partido === "Partido Liberal")
-                        color = COLORS[1];
+
+                      // Si es "todos los municipios" y hay empates, usar color gris para empates
                       if (
-                        entry.partido ===
-                        "Partido Libertad y Refundación (LIBRE)"
-                      )
-                        color = COLORS[2];
+                        filtroAlcaldes === "todos" &&
+                        empatesAlcaldes.has(entry.name)
+                      ) {
+                        color = "#9CA3AF"; // Color gris para empates
+                      } else {
+                        // Lógica normal de colores por partido
+                        if (entry.partido === "Partido Nacional")
+                          color = COLORS[0];
+                        if (entry.partido === "Partido Liberal")
+                          color = COLORS[1];
+                        if (
+                          entry.partido ===
+                          "Partido Libertad y Refundación (LIBRE)"
+                        )
+                          color = COLORS[2];
+                      }
+
                       return <Cell key={`cell-${index}`} fill={color} />;
                     })}
                   </Bar>
@@ -436,7 +502,7 @@ const Stats = () => {
           )}
           <div className="text-xs text-gray-500 mt-2 text-center">
             {filtroAlcaldes === "todos"
-              ? `Mostrando ${dataAlcaldes.length} de ${municipiosAlcaldes.length} municipios`
+              ? `Mostrando total de votos por municipio (${dataAlcaldes.length} municipios)`
               : `Candidatos en ${filtroAlcaldes}: ${dataAlcaldes.length}`}
           </div>
         </div>

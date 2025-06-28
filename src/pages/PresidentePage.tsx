@@ -78,7 +78,7 @@ export default function PresidentePage() {
         </span>
         <button
           className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/votar/alcalde")}
+          onClick={() => navigate("/votar/diputado")}
         >
           →
         </button>

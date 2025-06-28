@@ -76,7 +76,7 @@ export default function DiputadoPage() {
         </span>
         <button
           className="w-10 h-10 bg-green-600 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/votar/alcalde")}
         >
           ✓
         </button>

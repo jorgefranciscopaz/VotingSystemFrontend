@@ -84,7 +84,7 @@ export default function AlcaldePage() {
         </span>
         <button
           className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/votar/diputado")}
+          onClick={() => navigate("/")}
         >
           →
         </button>
