@@ -1,4 +1,4 @@
-import type { AlgorithmType } from "../algorithmType";
+import type { AlgorithmType } from "../../../types/algorithmType";
 
 export const banqueroVariosData: AlgorithmType = {
   id: "banquero-varios",

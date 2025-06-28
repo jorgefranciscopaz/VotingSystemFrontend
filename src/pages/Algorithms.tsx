@@ -100,7 +100,7 @@ const Algorithms = () => {
             </div>
 
             <div className="content-section">
-              <h3>Implementación en JavaScript</h3>
+              <h3>Implementación en {currentAlgorithm.codetype}</h3>
               <div className="code-block">
                 <div className="code-header">
                   <span>{currentAlgorithm.codetype}</span>

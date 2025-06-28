@@ -1,4 +1,4 @@
-import type { AlgorithmType } from "../algorithmType";
+import type { AlgorithmType } from "../../../types/algorithmType";
 
 export const filosofosData: AlgorithmType = {
   id: "filosofos",
@@ -7,7 +7,7 @@ export const filosofosData: AlgorithmType = {
   description: `
   
   `,
-  codetype: "javascript",
+  codetype: "JavaScript",
   code: `
 
   `,

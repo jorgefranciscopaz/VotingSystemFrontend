@@ -13,12 +13,24 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import type {
+  EstadisticasGenerales,
+  EstadisticasPresidenciales,
+  EstadisticasDiputados,
+  EstadisticasAlcaldes,
+} from "../types/DatabaseTypes";
 
 const Stats = () => {
-  const [statsGenerales, setStatsGenerales] = useState<any>(null);
-  const [statsPresidenciales, setStatsPresidenciales] = useState<any>(null);
-  const [statsDiputados, setStatsDiputados] = useState<any>(null);
-  const [statsAlcaldes, setStatsAlcaldes] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
+
+  const [statsGenerales, setStatsGenerales] =
+    useState<EstadisticasGenerales | null>(null);
+  const [statsPresidenciales, setStatsPresidenciales] =
+    useState<EstadisticasPresidenciales | null>(null);
+  const [statsDiputados, setStatsDiputados] =
+    useState<EstadisticasDiputados | null>(null);
+  const [statsAlcaldes, setStatsAlcaldes] =
+    useState<EstadisticasAlcaldes | null>(null);
   const [filtroDiputados, setFiltroDiputados] = useState("todos");
   const [filtroAlcaldes, setFiltroAlcaldes] = useState("todos");
   const [loading, setLoading] = useState(true);
@@ -286,7 +298,7 @@ const Stats = () => {
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {dataPresidentes.map((entry: any, index: number) => (
+                      {dataPresidentes.map((_: any, index: number) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
