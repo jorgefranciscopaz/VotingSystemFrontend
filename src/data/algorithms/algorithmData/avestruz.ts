@@ -7,7 +7,7 @@ export const avestruzData: AlgorithmType = {
   description: `
   
   `,
-  codetype: "pseudocode",
+  codetype: "JavaScript",
   code: `
 
   `,

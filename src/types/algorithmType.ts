@@ -3,7 +3,7 @@ export type AlgorithmType = {
   name: string;
   lastUpdated: string;
   description: string;
-  codetype: "pseudocode" | "JavaScript" | "C++";
+  codetype: "JavaScript" | "C++";
   code: string;
   inputExample: string;
   outputExample: string;

@@ -21,8 +21,6 @@ import type {
 } from "../types/DatabaseTypes";
 
 const Stats = () => {
-  const [stats, setStats] = useState<any>(null);
-
   const [statsGenerales, setStatsGenerales] =
     useState<EstadisticasGenerales | null>(null);
   const [statsPresidenciales, setStatsPresidenciales] =
