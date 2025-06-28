@@ -126,7 +126,7 @@ const Stats = () => {
   // Filtrar diputados por partido
   const dataDiputados =
     filtroDiputados === "todos"
-      ? statsDiputados?.candidatos?.slice(0, 9).map((candidato: any) => ({
+      ? statsDiputados?.candidatos?.slice(0, 15).map((candidato: any) => ({
           name: candidato.nombre,
           votos: candidato.total_votos,
           partido: candidato.partido,
@@ -272,6 +272,71 @@ const Stats = () => {
             </div>
           );
         })}
+      </div>
+    );
+  };
+
+  const CustomLegendDiputados = () => {
+    return (
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[0] }}
+          ></div>
+          <span className="font-medium">Partido Nacional</span>
+        </div>
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[1] }}
+          ></div>
+          <span className="font-medium">Partido Liberal</span>
+        </div>
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[2] }}
+          ></div>
+          <span className="font-medium">Partido Libre</span>
+        </div>
+      </div>
+    );
+  };
+
+  const CustomLegendAlcaldes = () => {
+    return (
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[0] }}
+          ></div>
+          <span className="font-medium">Partido Nacional</span>
+        </div>
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[1] }}
+          ></div>
+          <span className="font-medium">Partido Liberal</span>
+        </div>
+        <div className="flex items-center text-xs">
+          <div
+            className="w-3 h-3 rounded-full mr-2"
+            style={{ backgroundColor: COLORS[2] }}
+          ></div>
+          <span className="font-medium">Partido Libre</span>
+        </div>
+        {filtroAlcaldes === "todos" && empatesAlcaldes.size > 0 && (
+          <div className="flex items-center text-xs">
+            <div
+              className="w-3 h-3 rounded-full mr-2"
+              style={{ backgroundColor: "#9CA3AF" }}
+            ></div>
+            <span className="font-medium">Empate</span>
+          </div>
+        )}
       </div>
     );
   };
@@ -426,6 +491,7 @@ const Stats = () => {
                 No hay datos de votos diputados para este partido
               </div>
             )}
+            <CustomLegendDiputados />
             <div className="text-xs text-gray-500 mt-2 text-center">
               Mostrando {dataDiputados.length} de{" "}
               {statsDiputados?.candidatos?.length || 0} diputados
@@ -500,6 +566,7 @@ const Stats = () => {
               No hay datos de votos alcaldes para este municipio
             </div>
           )}
+          <CustomLegendAlcaldes />
           <div className="text-xs text-gray-500 mt-2 text-center">
             {filtroAlcaldes === "todos"
               ? `Mostrando total de votos por municipio (${dataAlcaldes.length} municipios)`

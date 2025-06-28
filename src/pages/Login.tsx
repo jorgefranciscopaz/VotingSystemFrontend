@@ -5,21 +5,21 @@ import BubbleBackground from "../components/BubbleBackground"; // Ajusta la ruta
 
 export default function Login() {
   const navigate = useNavigate();
+  const baseUrl = "https://votingbackend-fe5a580c2b2c.herokuapp.com/api";
+
   const [loginValues, setLoginValues] = useState({
     id: "",
     password: "",
   });
 
   const getPersonByID = async (id: string) => {
-    const response = await fetch(
-      `http://localhost:8000/api/personas/no-identidad/${id}`
-    );
+    const response = await fetch(`${baseUrl}/personas/no-identidad/${id}`);
     const data = await response.json();
     return data;
   };
 
   const UserLogin = async () => {
-    const response = await fetch(`http://localhost:8000/api/login`, {
+    const response = await fetch(`${baseUrl}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,9 +43,19 @@ export default function Login() {
 
         if (response && response.id_persona) {
           alert("Persona encontrada: " + response.nombre);
+          localStorage.setItem("token", response.token);
+          localStorage.setItem(
+            "userData",
+            JSON.stringify({
+              id_persona: response.id_persona,
+              nombre: response.nombre,
+              no_identidad: response.no_identidad,
+              municipio_id: response.municipio_id,
+              departamento_id: response.departamento_id,
+            })
+          );
           navigate("/home");
         } else {
-          //TODO: rellenar los datos restantes de la persona, para despues poder hacer el login solo con id
           navigate("/complete-info", {
             state: { no_identidad: loginValues.id },
           });
@@ -87,39 +97,30 @@ export default function Login() {
       >
         <img src={logo} alt="Logo RNP" className="mx-auto mb-6 w-250" />
 
-        {!loginValues.id.includes("@") && (
-          <input
-            type="text"
-            placeholder="No. de Identidad"
-            className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={loginValues.id}
-            onChange={(e) =>
-              setLoginValues({ ...loginValues, id: e.target.value })
-            }
-          />
-        )}
+        <input
+          type={loginValues.id.includes("@") ? "email" : "text"}
+          placeholder={
+            loginValues.id.includes("@")
+              ? "Correo electrónico"
+              : "No. de Identidad"
+          }
+          className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+          value={loginValues.id}
+          onChange={(e) =>
+            setLoginValues({ ...loginValues, id: e.target.value })
+          }
+        />
 
         {loginValues.id.includes("@") && (
-          <>
-            <input
-              type="text"
-              placeholder="Correo"
-              className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={loginValues.id}
-              onChange={(e) =>
-                setLoginValues({ ...loginValues, id: e.target.value })
-              }
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={loginValues.password}
-              onChange={(e) =>
-                setLoginValues({ ...loginValues, password: e.target.value })
-              }
-            />
-          </>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            className="w-full mb-4 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={loginValues.password}
+            onChange={(e) =>
+              setLoginValues({ ...loginValues, password: e.target.value })
+            }
+          />
         )}
 
         <button

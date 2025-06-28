@@ -17,6 +17,8 @@ export default function CompleteInfo() {
   const [departamentos, setDepartamentos] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const baseUrl = "https://votingbackend-fe5a580c2b2c.herokuapp.com/api";
+
   // Cargar departamentos al montar el componente
   useEffect(() => {
     fetchDepartamentos();
@@ -24,7 +26,7 @@ export default function CompleteInfo() {
 
   const fetchDepartamentos = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/departamentos");
+      const response = await fetch(`${baseUrl}/departamentos`);
       const data = await response.json();
       setDepartamentos(data);
     } catch (error) {
@@ -35,7 +37,7 @@ export default function CompleteInfo() {
   const fetchMunicipios = async (departamentoId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/municipios/departamento/${departamentoId}`
+        `${baseUrl}/municipios/departamento/${departamentoId}`
       );
       const data = await response.json();
       setMunicipios(Array.isArray(data) ? data : []);
@@ -58,7 +60,7 @@ export default function CompleteInfo() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
+      const response = await fetch(`${baseUrl}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

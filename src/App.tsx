@@ -8,6 +8,7 @@ import AlcaldePage from "./pages/AlcaldePage";
 import DiputadoPage from "./pages/DiputadoPage";
 import Stats from "./pages/Stats";
 import Algorithms from "./pages/Algorithms";
+import VoteProcessPage from "./pages/VoteProcessPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/votar/diputado" element={<DiputadoPage />} />
         <Route path="/estadisticas" element={<Stats />} />
         <Route path="/algoritmos" element={<Algorithms />} />
+        <Route path="/proceso-votacion" element={<VoteProcessPage />} />
       </Routes>
     </BrowserRouter>
   );
