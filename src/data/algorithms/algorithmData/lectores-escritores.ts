@@ -1,24 +1,24 @@
 import type { AlgorithmType } from "../../../types/algorithmType";
+import {
+  readersWritersRunner,
+  readersWritersSource,
+  readersWritersInputExample,
+  readersWritersOutputExample,
+} from "../algorithmCode/lectores-escritores";
 
 export const lectoresEscritoresData: AlgorithmType = {
   id: "lectores-escritores",
-  name: "Problema de los Lectores Escritores",
+  name: "Algoritmo de Lectores y Escritores (Preferencia Lectores)",
   lastUpdated: "2025-06-27",
-  description: `
-  
-  `,
+  description: `Este algoritmo maneja el acceso concurrente a un recurso compartido simulando eventos de lectura y escritura. Da preferencia a los lectores: múltiples lecturas pueden ocurrir simultáneamente si no hay un escritor activo. Sin embargo, un escritor solo puede acceder si no hay lectores ni otros escritores activos.`,
   codetype: "JavaScript",
-  code: (_input: any) => {
-    return "hola";
-  },
-  sourceCode: `
-  
-  `,
-  inputExample: ``,
-  outputExample: ``,
+  code: readersWritersRunner,
+  sourceCode: readersWritersSource,
+  inputExample: readersWritersInputExample,
+  outputExample: readersWritersOutputExample,
   complexity: {
-    bestCase: ``,
-    worstCase: ``,
-    averageCase: ``,
+    bestCase: "O(n)",
+    averageCase: "O(n)",
+    worstCase: "O(n)",
   },
 };
