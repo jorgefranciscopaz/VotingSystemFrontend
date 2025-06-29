@@ -112,7 +112,7 @@ export default function CompleteInfo() {
   };
 
   return (
-    <div className="relative flex items-center justify-center h-screen bg-white overflow-hidden">
+    <div className="relative flex items-center justify-center h-screen overflow-hidden">
       <BubbleBackground />
 
       {/* Formulario */}
