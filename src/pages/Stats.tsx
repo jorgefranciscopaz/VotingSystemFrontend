@@ -20,6 +20,13 @@ import type {
   EstadisticasAlcaldes,
 } from "../types/DatabaseTypes";
 
+interface ProcesoVotacion {
+  id_proceso: number;
+  etapa: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const Stats = () => {
   const [statsGenerales, setStatsGenerales] =
     useState<EstadisticasGenerales | null>(null);
@@ -29,6 +36,8 @@ const Stats = () => {
     useState<EstadisticasDiputados | null>(null);
   const [statsAlcaldes, setStatsAlcaldes] =
     useState<EstadisticasAlcaldes | null>(null);
+  const [procesos, setProcesos] = useState<ProcesoVotacion[]>([]);
+  const [procesoSeleccionado, setProcesoSeleccionado] = useState<number>(1);
   const [filtroDiputados, setFiltroDiputados] = useState("todos");
   const [filtroAlcaldes, setFiltroAlcaldes] = useState("todos");
   const [loading, setLoading] = useState(true);
@@ -76,37 +85,66 @@ const Stats = () => {
     return empates;
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  // Función para obtener todos los procesos de votación
+  const fetchProcesos = async () => {
+    try {
+      const response = await fetch(`${url}/estadisticas/procesos`);
+      const data = await response.json();
+      setProcesos(data.procesos);
 
-        const responseGenerales = await fetch(`${url}/estadisticas/generales`);
-        const dataGenerales = await responseGenerales.json();
-        setStatsGenerales(dataGenerales);
-
-        const responsePresidenciales = await fetch(
-          `${url}/estadisticas/presidenciales`
-        );
-        const dataPresidenciales = await responsePresidenciales.json();
-        setStatsPresidenciales(dataPresidenciales);
-
-        const responseDiputados = await fetch(`${url}/estadisticas/diputados`);
-        const dataDiputados = await responseDiputados.json();
-        setStatsDiputados(dataDiputados);
-
-        const responseAlcaldes = await fetch(`${url}/estadisticas/alcaldes`);
-        const dataAlcaldes = await responseAlcaldes.json();
-        setStatsAlcaldes(dataAlcaldes);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+      // Si no hay proceso seleccionado, usar el más reciente
+      if (data.procesos.length > 0 && !procesoSeleccionado) {
+        setProcesoSeleccionado(data.procesos[0].id_proceso);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching procesos:", error);
+    }
+  };
 
-    fetchData();
+  // Función para obtener estadísticas con proceso específico
+  const fetchData = async (procesoId: number) => {
+    try {
+      setLoading(true);
+
+      const responseGenerales = await fetch(
+        `${url}/estadisticas/generales?proceso_id=${procesoId}`
+      );
+      const dataGenerales = await responseGenerales.json();
+      setStatsGenerales(dataGenerales);
+
+      const responsePresidenciales = await fetch(
+        `${url}/estadisticas/presidenciales?proceso_id=${procesoId}`
+      );
+      const dataPresidenciales = await responsePresidenciales.json();
+      setStatsPresidenciales(dataPresidenciales);
+
+      const responseDiputados = await fetch(
+        `${url}/estadisticas/diputados?proceso_id=${procesoId}`
+      );
+      const dataDiputados = await responseDiputados.json();
+      setStatsDiputados(dataDiputados);
+
+      const responseAlcaldes = await fetch(
+        `${url}/estadisticas/alcaldes?proceso_id=${procesoId}`
+      );
+      const dataAlcaldes = await responseAlcaldes.json();
+      setStatsAlcaldes(dataAlcaldes);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProcesos();
   }, []);
+
+  useEffect(() => {
+    if (procesoSeleccionado) {
+      fetchData(procesoSeleccionado);
+    }
+  }, [procesoSeleccionado]);
 
   // Preparar datos para gráficos
   const dataPresidentes =
@@ -198,8 +236,9 @@ const Stats = () => {
           <p className="font-semibold text-gray-800">{data.name}</p>
           <p className="text-gray-600">Partido: {data.partido}</p>
           <p className="text-gray-600">Movimiento: {data.movimiento}</p>
-          <p className="text-blue-600 font-medium">Votos: {payload[0].value}</p>
-          <p className="text-green-600 font-medium">{percentage}%</p>
+          <p className="text-gray-600">
+            Votos: {payload[0].value} ({percentage}%)
+          </p>
         </div>
       );
     }
@@ -357,9 +396,43 @@ const Stats = () => {
       <Navbar />
 
       <div className="container mx-auto px-4 py-6 z-50">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           📊 Estadísticas de Votación
         </h1>
+
+        {/* Selector de Proceso de Votación */}
+        <div className="bg-white rounded-lg shadow p-4 mb-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                🗳️ Proceso de Votación
+              </h3>
+              <p className="text-sm text-gray-600">
+                Selecciona el proceso de votación para ver sus estadísticas
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <select
+                value={procesoSeleccionado}
+                onChange={(e) => setProcesoSeleccionado(Number(e.target.value))}
+                className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {procesos.map((proceso) => (
+                  <option key={proceso.id_proceso} value={proceso.id_proceso}>
+                    Proceso #{proceso.id_proceso} - {proceso.etapa} (
+                    {new Date(proceso.created_at).toLocaleDateString()})
+                  </option>
+                ))}
+              </select>
+              {statsGenerales?.proceso && (
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Estado:</span>{" "}
+                  {statsGenerales.proceso.etapa}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Primera Fila - Estadísticas Generales */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">

@@ -117,11 +117,13 @@ export interface VotoPresidencial {
   id_persona: number;
   id_candidato: number;
   id_departamento: number;
+  id_proceso: number;
   tiempo: string;
   // Relaciones definidas en el modelo Laravel
   persona?: Persona;
   candidato?: CandidatoPresidente;
   departamento?: Departamento;
+  procesoVotacion?: ProcesoVotacion;
 }
 
 export interface VotoDiputado {
@@ -129,11 +131,13 @@ export interface VotoDiputado {
   id_persona: number;
   id_candidato: number;
   id_departamento: number;
+  id_proceso: number;
   tiempo: string;
   // Relaciones definidas en el modelo Laravel
   persona?: Persona;
   candidato?: CandidatoDiputado;
   departamento?: Departamento;
+  procesoVotacion?: ProcesoVotacion;
 }
 
 export interface VotoAlcalde {
@@ -141,11 +145,13 @@ export interface VotoAlcalde {
   id_persona: number;
   id_candidato: number;
   id_municipio: number;
+  id_proceso: number;
   tiempo: string;
   // Relaciones definidas en el modelo Laravel
   persona?: Persona;
   candidato?: CandidatoAlcalde;
   municipio?: Municipio;
+  procesoVotacion?: ProcesoVotacion;
 }
 
 // ========================================
@@ -167,15 +173,27 @@ export interface ProcesoVotacion {
 // ========================================
 
 export interface EstadisticasGenerales {
+  proceso: {
+    id_proceso: number;
+    etapa: string;
+    created_at: string;
+  };
   totales: {
     total_general: number;
     votos_presidenciales: number;
     votos_diputados: number;
     votos_alcaldes: number;
   };
+  fecha_consulta: string;
 }
 
 export interface EstadisticasPresidenciales {
+  proceso: {
+    id_proceso: number;
+    etapa: string;
+    created_at: string;
+  };
+  total_votos: number;
   candidatos: Array<{
     id_candidato: number;
     nombre: string;
@@ -183,10 +201,17 @@ export interface EstadisticasPresidenciales {
     movimiento: string;
     total_votos: number;
     porcentaje: number;
+    foto_url?: string;
   }>;
 }
 
 export interface EstadisticasDiputados {
+  proceso: {
+    id_proceso: number;
+    etapa: string;
+    created_at: string;
+  };
+  total_votos: number;
   candidatos: Array<{
     id_candidato: number;
     nombre: string;
@@ -195,10 +220,17 @@ export interface EstadisticasDiputados {
     departamento: string;
     total_votos: number;
     porcentaje: number;
+    foto_url?: string;
   }>;
 }
 
 export interface EstadisticasAlcaldes {
+  proceso: {
+    id_proceso: number;
+    etapa: string;
+    created_at: string;
+  };
+  total_votos: number;
   candidatos: Array<{
     id_candidato: number;
     nombre: string;
@@ -207,6 +239,7 @@ export interface EstadisticasAlcaldes {
     municipio: string;
     total_votos: number;
     porcentaje: number;
+    foto_url?: string;
   }>;
 }
 
@@ -249,14 +282,17 @@ export interface CreateVotoRequest {
 
 export interface CreateVotoPresidencialRequest extends CreateVotoRequest {
   id_departamento: number;
+  id_proceso: number;
 }
 
 export interface CreateVotoDiputadoRequest extends CreateVotoRequest {
   id_departamento: number;
+  id_proceso: number;
 }
 
 export interface CreateVotoAlcaldeRequest extends CreateVotoRequest {
   id_municipio: number;
+  id_proceso: number;
 }
 
 // ========================================

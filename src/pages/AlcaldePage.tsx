@@ -43,6 +43,8 @@ interface Candidato {
 export default function AlcaldePage() {
   const navigate = useNavigate();
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
+  const [votosSeleccionados, setVotosSeleccionados] = useState(0);
+  const [alerta, setAlerta] = useState<string>("");
 
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   const municipioId = userData.municipio_id;
@@ -56,14 +58,95 @@ export default function AlcaldePage() {
       .catch((err) => console.error("Error al cargar candidatos:", err));
   }, []);
 
-  return (
-    <div className="bg-green-100 min-h-screen pb-20">
-      <Navbar />
-      <h2 className="text-3xl font-bold text-center py-8 text-red-600">
-        Candidatos a Alcalde
-      </h2>
+  // Función para actualizar el contador de votos
+  const actualizarContador = () => {
+    const votosGuardados = JSON.parse(
+      localStorage.getItem("votosSeleccionados") || "{}"
+    );
+    const cantidad = votosGuardados.alcaldes?.length || 0;
+    setVotosSeleccionados(cantidad);
+  };
 
-      <div className="px-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
+  // Escuchar cambios en los votos
+  useEffect(() => {
+    actualizarContador();
+
+    const handleVotosUpdated = () => {
+      actualizarContador();
+    };
+
+    const handleLimiteExcedido = (event: CustomEvent) => {
+      setAlerta(event.detail.mensaje);
+      setTimeout(() => setAlerta(""), 3000);
+
+      // Revertir la última selección
+      const votosGuardados = JSON.parse(
+        localStorage.getItem("votosSeleccionados") || "{}"
+      );
+
+      if (
+        event.detail.tipo === "Alcalde" &&
+        votosGuardados.alcaldes &&
+        votosGuardados.alcaldes.length > 1
+      ) {
+        // Remover el último alcalde seleccionado
+        votosGuardados.alcaldes.pop();
+        localStorage.setItem(
+          "votosSeleccionados",
+          JSON.stringify(votosGuardados)
+        );
+        window.dispatchEvent(new CustomEvent("votosUpdated"));
+      }
+    };
+
+    window.addEventListener("votosUpdated", handleVotosUpdated);
+    window.addEventListener(
+      "limiteExcedido",
+      handleLimiteExcedido as EventListener
+    );
+
+    return () => {
+      window.removeEventListener("votosUpdated", handleVotosUpdated);
+      window.removeEventListener(
+        "limiteExcedido",
+        handleLimiteExcedido as EventListener
+      );
+    };
+  }, []);
+
+  return (
+    <div className="bg-green-100 min-h-screen pb-20 pt-24">
+      <Navbar />
+
+      {/* Alerta de límite excedido */}
+      {alerta && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-10 mt-4">
+          <p className="font-semibold">{alerta}</p>
+        </div>
+      )}
+
+      {/* Indicador de votos */}
+      <div className="bg-white shadow-md rounded-lg mx-10 mt-4 p-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold text-red-600">
+            Candidatos a Alcalde
+          </h2>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-red-600">
+              Candidatos seleccionados: {votosSeleccionados}/1
+            </div>
+            <div className="text-sm text-gray-600">
+              {votosSeleccionados === 0
+                ? "No ha seleccionado candidato"
+                : votosSeleccionados === 1
+                ? "Candidato seleccionado"
+                : "Excede el límite"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center mt-6">
         {candidatos.map((c) => (
           <CandidatoCard
             key={c.id_candidato}

@@ -17,7 +17,6 @@ const VoteProcessPage = () => {
       const response = await fetch(`${baseUrl}/proceso-votacion`);
       const data = await response.json();
 
-      // Obtener el proceso más reciente (último registro)
       if (data && data.length > 0) {
         const ultimoProceso = data[data.length - 1];
         setProcesoActual(ultimoProceso);
@@ -33,7 +32,6 @@ const VoteProcessPage = () => {
     try {
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
-      // Si ya existe un proceso, actualizarlo. Si no, crear uno nuevo
       const url = procesoActual
         ? `${baseUrl}/proceso-votacion/${procesoActual.id_proceso}`
         : `${baseUrl}/proceso-votacion`;
@@ -54,7 +52,7 @@ const VoteProcessPage = () => {
 
       if (response.ok) {
         alert("Proceso de votación iniciado correctamente");
-        fetchProcesoActual(); // Recargar el estado
+        fetchProcesoActual();
       } else {
         alert("Error al iniciar el proceso de votación");
       }
@@ -86,12 +84,39 @@ const VoteProcessPage = () => {
 
       if (response.ok) {
         alert("Proceso de votación terminado correctamente");
-        fetchProcesoActual(); // Recargar el estado
+        fetchProcesoActual();
       } else {
         alert("Error al terminar el proceso de votación");
       }
     } catch (error) {
       alert("Error al terminar el proceso de votación");
+    }
+  };
+
+  const crearNuevoProceso = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("userData") || "{}");
+
+      const response = await fetch(`${baseUrl}/proceso-votacion`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          etapa: "Prevotacion",
+          modificado_por: userData.id_usuario || 1,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Nuevo proceso de votación creado correctamente");
+        fetchProcesoActual();
+      } else {
+        alert("Error al crear el nuevo proceso de votación");
+      }
+    } catch (error) {
+      alert("Error al crear el nuevo proceso de votación");
     }
   };
 
@@ -137,6 +162,10 @@ const VoteProcessPage = () => {
     return procesoActual && procesoActual.etapa === "Votacion";
   };
 
+  const puedeCrearNuevo = () => {
+    return procesoActual && procesoActual.etapa === "Postvotacion";
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -152,7 +181,7 @@ const VoteProcessPage = () => {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen pt-24">
       <Navbar />
       <BubbleBackground />
       <div className="container mx-auto px-4 py-8 z-50">
@@ -216,7 +245,7 @@ const VoteProcessPage = () => {
                   {!procesoActual
                     ? "🚀 Crear e Iniciar Proceso"
                     : procesoActual.etapa === "Postvotacion"
-                    ? "🔄 Reiniciar Votación"
+                    ? "🚀 Reiniciar Votación"
                     : "🚀 Iniciar Votación"}
                 </button>
               )}
@@ -229,9 +258,18 @@ const VoteProcessPage = () => {
                   ⏹️ Terminar Votación
                 </button>
               )}
+
+              {puedeCrearNuevo() && (
+                <button
+                  onClick={crearNuevoProceso}
+                  className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                >
+                  🆕 Crear Nuevo Proceso
+                </button>
+              )}
             </div>
 
-            {!puedeIniciar() && !puedeTerminar() && (
+            {!puedeIniciar() && !puedeTerminar() && !puedeCrearNuevo() && (
               <div className="text-center text-gray-500 mt-4">
                 <p>No hay acciones disponibles en este momento.</p>
               </div>

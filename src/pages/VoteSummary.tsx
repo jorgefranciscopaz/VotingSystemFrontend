@@ -17,6 +17,12 @@ interface VotoResumen {
   alcaldes: CandidatoSeleccionado[];
 }
 
+interface VotosNulos {
+  presidente: boolean;
+  diputados: boolean;
+  alcalde: boolean;
+}
+
 export default function VoteSummary() {
   const navigate = useNavigate();
   const [votos, setVotos] = useState<VotoResumen>({
@@ -26,52 +32,33 @@ export default function VoteSummary() {
   });
   const [errores, setErrores] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [votoNulo, setVotoNulo] = useState(false);
+  const [votosNulos, setVotosNulos] = useState<VotosNulos>({
+    presidente: false,
+    diputados: false,
+    alcalde: false,
+  });
 
   useEffect(() => {
-    // Obtener votos del localStorage
     const votosGuardados = JSON.parse(
       localStorage.getItem("votosSeleccionados") || "{}"
     );
     setVotos(votosGuardados);
 
-    // Verificar si debe ser voto nulo
-    const debeSerNulo = verificarVotoNulo(votosGuardados);
-    setVotoNulo(debeSerNulo);
+    const votosNulosCalculados = verificarVotosNulos(votosGuardados);
+    setVotosNulos(votosNulosCalculados);
   }, []);
 
-  const verificarVotoNulo = (votos: VotoResumen): boolean => {
-    // Si no hay presidentes, es voto nulo
-    if (!votos.presidentes || votos.presidentes.length === 0) return true;
-
-    // Si hay más de 1 presidente, es voto nulo
-    if (votos.presidentes.length > 1) return true;
-
-    // Si no hay alcaldes, es voto nulo
-    if (!votos.alcaldes || votos.alcaldes.length === 0) return true;
-
-    // Si hay más de 1 alcalde, es voto nulo
-    if (votos.alcaldes.length > 1) return true;
-
-    // Si no hay diputados, es voto nulo
-    if (!votos.diputados || votos.diputados.length === 0) return true;
-
-    // Si hay más de 9 diputados, es voto nulo
-    if (votos.diputados.length > 9) return true;
-
-    return false;
+  const verificarVotosNulos = (votos: VotoResumen): VotosNulos => {
+    return {
+      presidente: !votos.presidentes || votos.presidentes.length === 0,
+      diputados: !votos.diputados || votos.diputados.length === 0,
+      alcalde: !votos.alcaldes || votos.alcaldes.length === 0,
+    };
   };
 
   const validarVotos = (): boolean => {
     const nuevosErrores: string[] = [];
 
-    // Si es voto nulo, no mostrar errores de validación
-    if (votoNulo) {
-      setErrores([]);
-      return true;
-    }
-
-    // Validar presidente
     if (!votos.presidentes || votos.presidentes.length === 0) {
       nuevosErrores.push(
         "Debe seleccionar exactamente 1 candidato a Presidente"
@@ -82,14 +69,12 @@ export default function VoteSummary() {
       );
     }
 
-    // Validar diputados
     if (!votos.diputados || votos.diputados.length === 0) {
       nuevosErrores.push("Debe seleccionar al menos 1 candidato a Diputado");
     } else if (votos.diputados.length > 9) {
       nuevosErrores.push("No puede seleccionar más de 9 candidatos a Diputado");
     }
 
-    // Validar alcalde
     if (!votos.alcaldes || votos.alcaldes.length === 0) {
       nuevosErrores.push("Debe seleccionar exactamente 1 candidato a Alcalde");
     } else if (votos.alcaldes.length > 1) {
@@ -110,12 +95,12 @@ export default function VoteSummary() {
     const personaId = userData.id_persona;
     const departamentoId = userData.departamento_id;
     const municipioId = userData.municipio_id;
+    const procesoId = userData.proceso_id || 1;
 
     console.log("Datos del usuario:", userData);
     console.log("Votos a enviar:", votos);
-    console.log("Es voto nulo:", votoNulo);
+    console.log("Votos nulos:", votosNulos);
 
-    // Verificar que todos los datos necesarios estén presentes
     if (!personaId) {
       setErrores(["Error: No se encontró el ID de la persona"]);
       setIsSubmitting(false);
@@ -135,7 +120,6 @@ export default function VoteSummary() {
     }
 
     try {
-      // Enviar voto presidencial
       const responsePresidencial = await fetch(
         "https://votingbackend-fe5a580c2b2c.herokuapp.com/api/votos-presidenciales",
         {
@@ -145,10 +129,11 @@ export default function VoteSummary() {
           },
           body: JSON.stringify({
             id_persona: personaId,
-            id_candidato: votoNulo
+            id_candidato: votosNulos.presidente
               ? null
               : votos.presidentes?.[0]?.id_candidato || null,
             id_departamento: departamentoId,
+            id_proceso: procesoId,
             tiempo: new Date().toISOString(),
           }),
         }
@@ -160,9 +145,7 @@ export default function VoteSummary() {
         );
       }
 
-      // Enviar votos diputados
-      if (votoNulo) {
-        // Si es voto nulo, enviar un solo voto con id_candidato null
+      if (votosNulos.diputados) {
         const responseDiputado = await fetch(
           "https://votingbackend-fe5a580c2b2c.herokuapp.com/api/votos-diputados",
           {
@@ -174,6 +157,7 @@ export default function VoteSummary() {
               id_persona: personaId,
               id_candidato: null,
               id_departamento: departamentoId,
+              id_proceso: procesoId,
               tiempo: new Date().toISOString(),
             }),
           }
@@ -185,7 +169,6 @@ export default function VoteSummary() {
           );
         }
       } else {
-        // Enviar votos normales para cada diputado seleccionado
         for (const diputado of votos.diputados) {
           const responseDiputado = await fetch(
             "https://votingbackend-fe5a580c2b2c.herokuapp.com/api/votos-diputados",
@@ -198,6 +181,7 @@ export default function VoteSummary() {
                 id_persona: personaId,
                 id_candidato: diputado.id_candidato,
                 id_departamento: departamentoId,
+                id_proceso: procesoId,
                 tiempo: new Date().toISOString(),
               }),
             }
@@ -211,7 +195,6 @@ export default function VoteSummary() {
         }
       }
 
-      // Enviar voto alcalde
       const responseAlcalde = await fetch(
         "https://votingbackend-fe5a580c2b2c.herokuapp.com/api/votos-alcaldes",
         {
@@ -221,10 +204,11 @@ export default function VoteSummary() {
           },
           body: JSON.stringify({
             id_persona: personaId,
-            id_candidato: votoNulo
+            id_candidato: votosNulos.alcalde
               ? null
               : votos.alcaldes?.[0]?.id_candidato || null,
             id_municipio: municipioId,
+            id_proceso: procesoId,
             tiempo: new Date().toISOString(),
           }),
         }
@@ -236,7 +220,6 @@ export default function VoteSummary() {
         );
       }
 
-      // Limpiar localStorage y redirigir
       localStorage.removeItem("votosSeleccionados");
       navigate("/voto-exitoso");
     } catch (error) {
@@ -253,8 +236,11 @@ export default function VoteSummary() {
     navigate("/votar/presidente");
   };
 
+  const hayVotosNulos =
+    votosNulos.presidente || votosNulos.diputados || votosNulos.alcalde;
+
   return (
-    <div className="bg-green-100 min-h-screen pb-20">
+    <div className="bg-green-100 min-h-screen pb-20 pt-24">
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-6 py-8">
@@ -262,50 +248,30 @@ export default function VoteSummary() {
           Resumen de Votos
         </h2>
 
-        {/* Aviso de voto nulo */}
-        {votoNulo && (
+        {hayVotosNulos && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <h3 className="font-bold mb-2">⚠️ Voto Nulo Detectado</h3>
+            <h3 className="font-bold mb-2">⚠️ Votos Nulos Detectados</h3>
             <p>
-              Su voto será registrado como nulo debido a que:
-              {(!votos.presidentes || votos.presidentes.length === 0) && (
+              Los siguientes votos serán registrados como nulos:
+              {votosNulos.presidente && (
                 <span className="block">
-                  • No seleccionó candidato a Presidente
+                  • Presidente: No seleccionó candidato
                 </span>
               )}
-              {votos.presidentes && votos.presidentes.length > 1 && (
+              {votosNulos.diputados && (
                 <span className="block">
-                  • Seleccionó más de 1 candidato a Presidente (
-                  {votos.presidentes.length})
+                  • Diputados: No seleccionó candidatos
                 </span>
               )}
-              {(!votos.alcaldes || votos.alcaldes.length === 0) && (
+              {votosNulos.alcalde && (
                 <span className="block">
-                  • No seleccionó candidato a Alcalde
-                </span>
-              )}
-              {votos.alcaldes && votos.alcaldes.length > 1 && (
-                <span className="block">
-                  • Seleccionó más de 1 candidato a Alcalde (
-                  {votos.alcaldes.length})
-                </span>
-              )}
-              {(!votos.diputados || votos.diputados.length === 0) && (
-                <span className="block">
-                  • No seleccionó candidatos a Diputado
-                </span>
-              )}
-              {votos.diputados && votos.diputados.length > 9 && (
-                <span className="block">
-                  • Seleccionó más de 9 candidatos a Diputado (
-                  {votos.diputados.length})
+                  • Alcalde: No seleccionó candidato
                 </span>
               )}
             </p>
           </div>
         )}
 
-        {/* Errores de validación */}
         {errores.length > 0 && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
             <h3 className="font-bold mb-2">Errores de validación:</h3>
@@ -317,7 +283,6 @@ export default function VoteSummary() {
           </div>
         )}
 
-        {/* Presidente */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h3 className="text-xl font-semibold mb-4 text-blue-800">
             Presidente ({votos.presidentes?.length || 0}/1)
@@ -325,6 +290,9 @@ export default function VoteSummary() {
               <span className="text-red-500 text-sm ml-2">
                 ⚠️ Excede el límite
               </span>
+            )}
+            {votosNulos.presidente && (
+              <span className="text-orange-500 text-sm ml-2">⚠️ Voto nulo</span>
             )}
           </h3>
           {votos.presidentes && votos.presidentes.length > 0 ? (
@@ -353,7 +321,6 @@ export default function VoteSummary() {
           )}
         </div>
 
-        {/* Diputados */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h3 className="text-xl font-semibold mb-4 text-yellow-600">
             Diputados ({votos.diputados?.length || 0}/9)
@@ -361,6 +328,9 @@ export default function VoteSummary() {
               <span className="text-red-500 text-sm ml-2">
                 ⚠️ Excede el límite
               </span>
+            )}
+            {votosNulos.diputados && (
+              <span className="text-orange-500 text-sm ml-2">⚠️ Voto nulo</span>
             )}
           </h3>
           {votos.diputados && votos.diputados.length > 0 ? (
@@ -387,7 +357,6 @@ export default function VoteSummary() {
           )}
         </div>
 
-        {/* Alcalde */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h3 className="text-xl font-semibold mb-4 text-red-600">
             Alcalde ({votos.alcaldes?.length || 0}/1)
@@ -395,6 +364,9 @@ export default function VoteSummary() {
               <span className="text-red-500 text-sm ml-2">
                 ⚠️ Excede el límite
               </span>
+            )}
+            {votosNulos.alcalde && (
+              <span className="text-orange-500 text-sm ml-2">⚠️ Voto nulo</span>
             )}
           </h3>
           {votos.alcaldes && votos.alcaldes.length > 0 ? (
@@ -423,7 +395,6 @@ export default function VoteSummary() {
           )}
         </div>
 
-        {/* Botones de acción */}
         <div className="flex justify-between items-center">
           <button
             onClick={volverAEditar}
@@ -438,15 +409,15 @@ export default function VoteSummary() {
             className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
-                : votoNulo
+                : hayVotosNulos
                 ? "bg-orange-600 hover:bg-orange-700 text-white"
                 : "bg-green-600 hover:bg-green-700 text-white"
             }`}
           >
             {isSubmitting
               ? "Enviando..."
-              : votoNulo
-              ? "Confirmar Voto Nulo"
+              : hayVotosNulos
+              ? "Confirmar Votos (con nulos)"
               : "Confirmar Votos"}
           </button>
         </div>

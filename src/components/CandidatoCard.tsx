@@ -90,6 +90,19 @@ const CandidatoCard: React.FC<CandidatoCardProps> = ({
       }
 
       if (!seleccionado) {
+        // Verificar límite de 1 presidente
+        if (votosGuardados.presidentes.length >= 1) {
+          // Disparar evento para mostrar alerta en la página principal
+          window.dispatchEvent(
+            new CustomEvent("limiteExcedido", {
+              detail: {
+                tipo: "Presidente",
+                mensaje: "Solo puede seleccionar 1 candidato a Presidente",
+              },
+            })
+          );
+          return;
+        }
         votosGuardados.presidentes.push({
           id_candidato,
           nombre,
@@ -110,6 +123,20 @@ const CandidatoCard: React.FC<CandidatoCardProps> = ({
       }
 
       if (!seleccionado) {
+        // Verificar límite de 9 diputados
+        if (votosGuardados.diputados.length >= 9) {
+          // Disparar evento para mostrar alerta en la página principal
+          window.dispatchEvent(
+            new CustomEvent("limiteExcedido", {
+              detail: {
+                tipo: "Diputado",
+                mensaje:
+                  "Solo puede seleccionar máximo 9 candidatos a Diputado",
+              },
+            })
+          );
+          return;
+        }
         votosGuardados.diputados.push({
           id_candidato,
           nombre,
@@ -130,6 +157,19 @@ const CandidatoCard: React.FC<CandidatoCardProps> = ({
       }
 
       if (!seleccionado) {
+        // Verificar límite de 1 alcalde
+        if (votosGuardados.alcaldes.length >= 1) {
+          // Disparar evento para mostrar alerta en la página principal
+          window.dispatchEvent(
+            new CustomEvent("limiteExcedido", {
+              detail: {
+                tipo: "Alcalde",
+                mensaje: "Solo puede seleccionar 1 candidato a Alcalde",
+              },
+            })
+          );
+          return;
+        }
         votosGuardados.alcaldes.push({
           id_candidato,
           nombre,

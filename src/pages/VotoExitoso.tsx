@@ -9,7 +9,7 @@ export default function VotoExitoso() {
   };
 
   return (
-    <div className="bg-green-100 min-h-screen">
+    <div className="bg-green-100 min-h-screen pt-24">
       <Navbar />
 
       <div className="max-w-2xl mx-auto px-6 py-16 text-center">
