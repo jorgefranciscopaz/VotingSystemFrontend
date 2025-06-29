@@ -44,8 +44,10 @@ export default function HomePage() {
       const data = await response.json();
 
       if (data && data.length > 0) {
-        const ultimoProceso = data[data.length - 1];
-        setProcesoVotacion(ultimoProceso);
+        const procesoActivo = data.find(
+          (proceso: any) => proceso.etapa === "Votacion"
+        );
+        setProcesoVotacion(procesoActivo);
       } else {
         setProcesoVotacion(null);
       }
@@ -60,6 +62,7 @@ export default function HomePage() {
     try {
       const userData = JSON.parse(localStorage.getItem("userData") || "{}");
       const id_persona = userData.id_persona;
+      let id_proceso = userData.proceso_id;
 
       if (!id_persona) {
         console.warn("No se encontró id_persona en localStorage");
@@ -67,9 +70,25 @@ export default function HomePage() {
         return;
       }
 
+      // Si no hay proceso_id en userData, usar el del procesoVotacion
+      if (!id_proceso && procesoVotacion) {
+        id_proceso = procesoVotacion.id_proceso;
+
+        // Actualizar userData con el proceso_id
+        const updatedUserData = { ...userData, proceso_id: id_proceso };
+        localStorage.setItem("userData", JSON.stringify(updatedUserData));
+      }
+
+      if (!id_proceso) {
+        console.warn(
+          "No se encontró proceso_id en userData ni en procesoVotacion"
+        );
+        setPersonaVoto({ voto: false });
+        return;
+      }
+
       const response = await fetch(
-        `${baseUrl}/personas/verificar-voto/${id_persona}`
-        //`http://localhost:8000/api/personas/verificar-voto/${id_persona}`
+        `${baseUrl}/personas/verificar-voto/${id_persona}/${id_proceso}`
       );
 
       if (!response.ok) {
@@ -92,12 +111,19 @@ export default function HomePage() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      await Promise.all([fetchProcesoVotacion(), fetchPersonaVoto()]);
+      await fetchProcesoVotacion();
       setLoading(false);
     };
 
     loadData();
   }, []);
+
+  // Ejecutar fetchPersonaVoto cuando procesoVotacion esté disponible
+  useEffect(() => {
+    if (procesoVotacion) {
+      fetchPersonaVoto();
+    }
+  }, [procesoVotacion]);
 
   if (loading) {
     return (
@@ -272,7 +298,6 @@ export default function HomePage() {
           </div>
         </div>
       ) : (
-        /* Mostrar mensaje por defecto si no hay proceso o no está en votación */
         <div className="flex items-center justify-center min-h-screen">
           <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
             <div className="text-6xl mb-4">📋</div>
