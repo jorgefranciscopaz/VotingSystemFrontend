@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
+import BubbleBackground from "../components/BubbleBackground";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -101,6 +102,7 @@ export default function HomePage() {
   if (loading) {
     return (
       <div className="relative min-h-screen overflow-hidden">
+        <BubbleBackground />
         <Navbar />
         <div className="flex items-center justify-center min-h-screen">
           <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
@@ -120,6 +122,7 @@ export default function HomePage() {
   if (error) {
     return (
       <div className="relative min-h-screen overflow-hidden">
+        <BubbleBackground />
         <Navbar />
         <div className="flex items-center justify-center min-h-screen">
           <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
@@ -140,6 +143,7 @@ export default function HomePage() {
     if (procesoVotacion.etapa === "Prevotacion") {
       return (
         <div className="relative min-h-screen overflow-hidden">
+          <BubbleBackground />
           <Navbar />
           <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
@@ -160,6 +164,7 @@ export default function HomePage() {
     if (procesoVotacion.etapa === "Postvotacion") {
       return (
         <div className="relative min-h-screen overflow-hidden">
+          <BubbleBackground />
           <Navbar />
           <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
@@ -180,6 +185,7 @@ export default function HomePage() {
     if (personaVoto && personaVoto.voto) {
       return (
         <div className="relative min-h-screen overflow-hidden">
+          <BubbleBackground />
           <Navbar />
           <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white shadow-lg rounded-lg p-8 text-center max-w-md mx-4">
@@ -218,6 +224,7 @@ export default function HomePage() {
         <div className="absolute bottom-[45%] left-[25%] w-32 h-32 bg-yellow-100 opacity-60 rounded-full blur-3xl animate-pulseSlow delay-1000" />
       </div>
 
+      <BubbleBackground />
       <Navbar />
 
       {procesoVotacion && procesoVotacion.etapa === "Votacion" ? (
