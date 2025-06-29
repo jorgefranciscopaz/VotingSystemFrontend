@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import logo from "../assets/logoRNP.png";
 import BubbleBackground from "../components/BubbleBackground"; // Ajusta la ruta si es necesario
 
 export default function Login() {
@@ -113,7 +112,7 @@ export default function Login() {
         onSubmit={handleLogin}
         className="z-10 bg-white p-8 rounded shadow-md w-80 text-center relative"
       >
-        <img src={logo} alt="Logo RNP" className="mx-auto mb-6 w-250" />
+        <img src="/logoRNP.png" alt="Logo RNP" className="mx-auto mb-6 w-250" />
 
         <input
           type={loginValues.id.includes("@") ? "email" : "text"}

@@ -15,17 +15,17 @@ export default function HomePage() {
     {
       nombre: "Partido Nacional",
       color: "bg-blue-100",
-      logo: "/src/assets/partido_nacional.png",
+      logo: "/partido_nacional.png",
     },
     {
       nombre: "Partido Liberal",
       color: "bg-yellow-100",
-      logo: "/src/assets/partido_liberal.png",
+      logo: "/partido_liberal.png",
     },
     {
       nombre: "Partido Libre",
       color: "bg-red-100",
-      logo: "/src/assets/partido_libre.png",
+      logo: "/partido_libre.png",
     },
   ];
 
@@ -258,7 +258,7 @@ export default function HomePage() {
           <div className="bg-white shadow-md rounded-lg p-10 text-center">
             <div className="w-full h-60 bg-gray-300 rounded-md flex items-center justify-center">
               <img
-                src="/src/assets/propaganda_imagen.jpg"
+                src="/propaganda_imagen.jpg"
                 alt="Propaganda Partido Nacional"
                 className="w-full h-60 object-cover rounded-md"
               />

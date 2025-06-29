@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-white shadow-md px-8 py-4 flex justify-between items-center fixed w-full top-0 z-50 mb-40">
       <div className="flex items-center space-x-4">
-        <img src="/src/assets/logoRNP.png" alt="Logo RNP" className="h-12" />
+        <img src="/logoRNP.png" alt="Logo RNP" className="h-12" />
         <h1 className="text-xl font-bold text-blue-800">VotingSystem</h1>
       </div>
       <div className="flex items-center space-x-4">
