@@ -1,5 +1,3 @@
-// DiputadoPage.tsx
-
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CandidatoCard from "../components/CandidatoCard";
@@ -9,7 +7,7 @@ interface Partido {
   id_partido: number;
   nombre: string;
 }
-interface Movimiento{
+interface Movimiento {
   id_movimiento: number;
   nombre: string;
 }
@@ -38,8 +36,11 @@ interface Candidato {
 export default function DiputadoPage() {
   const navigate = useNavigate();
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
+
   useEffect(() => {
-    fetch("https://votingbackend-fe5a580c2b2c.herokuapp.com/api/candidatos-diputado")
+    fetch(
+      "https://votingbackend-fe5a580c2b2c.herokuapp.com/api/candidatos-diputado"
+    )
       .then((res) => res.json())
       .then((data) => setCandidatos(data))
       .catch((err) => console.error("Error al cargar candidatos:", err));
@@ -51,15 +52,21 @@ export default function DiputadoPage() {
       <h2 className="text-3xl font-bold text-center py-8 text-yellow-600">
         Candidatos a Diputado
       </h2>
+
       <div className="px-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
         {candidatos.map((c) => (
-          <CandidatoCard key={c.id_candidato} 
-          fotoUrl={c.foto_url} 
-          nombre = {c.nombre} 
-          partido = {c.partido.nombre}
-          movimiento={c.movimiento ? c.movimiento.nombre : "Sin Movimiento"} 
-          ubicacion={"Santa Barbara"} 
-          rol="Diputado" />
+          <CandidatoCard
+            key={c.id_candidato}
+            id_candidato={c.id_candidato}
+            fotoUrl={c.foto_url}
+            nombre={c.nombre}
+            partido={c.partido.nombre}
+            movimiento={c.movimiento ? c.movimiento.nombre : "Sin Movimiento"}
+            ubicacion={"Santa Barbara"}
+            rol="Diputado"
+            tipo="Diputado"
+            maxSelecciones={9}
+          />
         ))}
       </div>
 
@@ -75,7 +82,7 @@ export default function DiputadoPage() {
           DIPUTADO
         </span>
         <button
-          className="w-10 h-10 bg-green-600 rounded-full text-white text-lg flex items-center justify-center"
+          className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
           onClick={() => navigate("/votar/alcalde")}
         >
           →

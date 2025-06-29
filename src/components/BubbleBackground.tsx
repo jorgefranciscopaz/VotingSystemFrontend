@@ -14,7 +14,7 @@ export default function BubbleBackground() {
       return (
         <div
           key={i}
-          className="bubble"
+          className="bubble z-0"
           style={{
             width: `${size}px`,
             height: `${size}px`,
@@ -28,5 +28,7 @@ export default function BubbleBackground() {
     });
   }, []); // ← Esto asegura que se calcula solo una vez
 
-  return <div className="absolute inset-0 z-0 pointer-events-none">{bubbles}</div>;
+  return (
+    <div className="absolute inset-0 -z-10 pointer-events-none">{bubbles}</div>
+  );
 }

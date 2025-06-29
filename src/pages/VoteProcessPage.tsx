@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import BubbleBackground from "../components/BubbleBackground";
 
 const VoteProcessPage = () => {
   const [procesoActual, setProcesoActual] = useState<any>(null);
@@ -125,7 +126,11 @@ const VoteProcessPage = () => {
   };
 
   const puedeIniciar = () => {
-    return !procesoActual || procesoActual.etapa === "Prevotacion";
+    return (
+      !procesoActual ||
+      procesoActual.etapa === "Prevotacion" ||
+      procesoActual.etapa === "Postvotacion"
+    );
   };
 
   const puedeTerminar = () => {
@@ -147,9 +152,10 @@ const VoteProcessPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <BubbleBackground />
+      <div className="container mx-auto px-4 py-8 z-50">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
             🗳️ Proceso de Votación
@@ -207,9 +213,11 @@ const VoteProcessPage = () => {
                   onClick={iniciarProceso}
                   className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
                 >
-                  {procesoActual
-                    ? "🚀 Iniciar Votación"
-                    : "🚀 Crear e Iniciar Proceso"}
+                  {!procesoActual
+                    ? "🚀 Crear e Iniciar Proceso"
+                    : procesoActual.etapa === "Postvotacion"
+                    ? "🔄 Reiniciar Votación"
+                    : "🚀 Iniciar Votación"}
                 </button>
               )}
 

@@ -355,7 +355,8 @@ const Stats = () => {
   return (
     <div className="min-h-screen bg-gray-50 mt-20">
       <Navbar />
-      <div className="container mx-auto px-4 py-6">
+
+      <div className="container mx-auto px-4 py-6 z-50">
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           📊 Estadísticas de Votación
         </h1>

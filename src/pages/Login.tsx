@@ -44,6 +44,13 @@ export default function Login() {
         if (response && response.id_persona) {
           alert("Persona encontrada: " + response.nombre);
           console.log("Datos de la persona:", response);
+
+          // Limpiar votos anteriores
+          localStorage.removeItem("votosSeleccionados");
+          localStorage.removeItem("votosGuardados");
+          localStorage.removeItem("votosGuardadosDiputados");
+          localStorage.removeItem("votosGuardadosAlcaldes");
+
           localStorage.setItem("token", response.token);
           localStorage.setItem(
             "userData",
@@ -51,10 +58,14 @@ export default function Login() {
               id_persona: response.id_persona,
               nombre: response.nombre,
               no_identidad: response.no_identidad,
-              municipio_id: response.id_municipio
+              municipio_id: response.id_municipio,
+              departamento_id: response.departamento_id,
             })
           );
-          console.log("Datos del usuario guardados en localStorage:", localStorage.getItem("userData"));
+          console.log(
+            "Datos del usuario guardados en localStorage:",
+            localStorage.getItem("userData")
+          );
           navigate("/home");
         } else {
           navigate("/complete-info", {
@@ -67,6 +78,12 @@ export default function Login() {
     } else {
       const response = await UserLogin();
       if (response.id_usuario) {
+        // Limpiar votos anteriores
+        localStorage.removeItem("votosSeleccionados");
+        localStorage.removeItem("votosGuardados");
+        localStorage.removeItem("votosGuardadosDiputados");
+        localStorage.removeItem("votosGuardadosAlcaldes");
+
         localStorage.setItem("token", response.token);
         localStorage.setItem(
           "userData",

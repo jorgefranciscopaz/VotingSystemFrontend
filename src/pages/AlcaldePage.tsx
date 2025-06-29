@@ -13,7 +13,7 @@ interface Municipio {
   nombre: string;
 }
 
-interface Movimiento{
+interface Movimiento {
   id_movimiento: number;
   nombre: string;
 }
@@ -46,14 +46,15 @@ export default function AlcaldePage() {
 
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   const municipioId = userData.municipio_id;
- 
+
   useEffect(() => {
-    fetch(`https://votingbackend-fe5a580c2b2c.herokuapp.com/api/municipios/${municipioId}/candidatos-alcalde`)
+    fetch(
+      `https://votingbackend-fe5a580c2b2c.herokuapp.com/api/municipios/${municipioId}/candidatos-alcalde`
+    )
       .then((res) => res.json())
       .then((data) => setCandidatos(data))
       .catch((err) => console.error("Error al cargar candidatos:", err));
   }, []);
-
 
   return (
     <div className="bg-green-100 min-h-screen pb-20">
@@ -64,13 +65,17 @@ export default function AlcaldePage() {
 
       <div className="px-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 justify-center">
         {candidatos.map((c) => (
-          <CandidatoCard key={c.id_candidato} 
-          fotoUrl={c.foto_url} 
-          nombre = {c.nombre} 
-          partido = {c.partido.nombre}
-          movimiento={c.movimiento ? c.movimiento.nombre : "Sin Movimiento"} 
-          ubicacion={"Santa Barbara/"+c.municipio.nombre } 
-          rol="Alcalde" />
+          <CandidatoCard
+            key={c.id_candidato}
+            id_candidato={c.id_candidato}
+            fotoUrl={c.foto_url}
+            nombre={c.nombre}
+            partido={c.partido.nombre}
+            movimiento={c.movimiento ? c.movimiento.nombre : "Sin Movimiento"}
+            ubicacion={"Santa Barbara/" + c.municipio.nombre}
+            rol="Alcalde"
+            tipo="Alcalde"
+          />
         ))}
       </div>
 
@@ -86,8 +91,8 @@ export default function AlcaldePage() {
           ALCALDE
         </span>
         <button
-          className="w-10 h-10 bg-gray-400 rounded-full text-white text-lg flex items-center justify-center"
-          onClick={() => navigate("/proceso-votacion")}
+          className="w-10 h-10 bg-green-500 rounded-full text-white text-lg flex items-center justify-center"
+          onClick={() => navigate("/votar/resumen")}
         >
           ✓
         </button>

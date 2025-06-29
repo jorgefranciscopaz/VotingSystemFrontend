@@ -81,6 +81,12 @@ export default function CompleteInfo() {
       }
 
       if (data.token) {
+        // Limpiar votos anteriores
+        localStorage.removeItem("votosSeleccionados");
+        localStorage.removeItem("votosGuardados");
+        localStorage.removeItem("votosGuardadosDiputados");
+        localStorage.removeItem("votosGuardadosAlcaldes");
+
         localStorage.setItem("token", data.token);
         localStorage.setItem(
           "userData",
