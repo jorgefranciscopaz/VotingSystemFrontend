@@ -59,25 +59,20 @@ export default function VoteSummary() {
   const validarVotos = (): boolean => {
     const nuevosErrores: string[] = [];
 
-    if (!votos.presidentes || votos.presidentes.length === 0) {
-      nuevosErrores.push(
-        "Debe seleccionar exactamente 1 candidato a Presidente"
-      );
-    } else if (votos.presidentes.length > 1) {
+    // Validar que no exceda el límite de presidentes (máximo 1)
+    if (votos.presidentes && votos.presidentes.length > 1) {
       nuevosErrores.push(
         "Debe seleccionar exactamente 1 candidato a Presidente"
       );
     }
 
-    if (!votos.diputados || votos.diputados.length === 0) {
-      nuevosErrores.push("Debe seleccionar al menos 1 candidato a Diputado");
-    } else if (votos.diputados.length > 9) {
+    // Validar que no exceda el límite de diputados (máximo 9)
+    if (votos.diputados && votos.diputados.length > 9) {
       nuevosErrores.push("No puede seleccionar más de 9 candidatos a Diputado");
     }
 
-    if (!votos.alcaldes || votos.alcaldes.length === 0) {
-      nuevosErrores.push("Debe seleccionar exactamente 1 candidato a Alcalde");
-    } else if (votos.alcaldes.length > 1) {
+    // Validar que no exceda el límite de alcaldes (máximo 1)
+    if (votos.alcaldes && votos.alcaldes.length > 1) {
       nuevosErrores.push("Debe seleccionar exactamente 1 candidato a Alcalde");
     }
 
